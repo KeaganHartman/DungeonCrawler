@@ -47,7 +47,7 @@ Window::Window()
 	m_hWnd = CreateWindowEx(
 		0,
 		CLASS_NAME,
-		L"Title",
+		L"Dungeon Crawler",
 		style,
 		rect.left,
 		rect.top,

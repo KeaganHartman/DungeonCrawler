@@ -20,6 +20,8 @@ public:
 
 	bool ProcessMessages();
 
+	HWND GetWindow() { return m_hWnd; }
+
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
