@@ -1,0 +1,7 @@
+﻿  Render.cpp
+D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(50,10): error C2660: 'ID3D11Device::CreateRenderTargetView': function does not take 0 arguments
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um\d3d11.h(14162,43): message : see declaration of 'ID3D11Device::CreateRenderTargetView'
+D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(50,10): message : while trying to match the argument list '()'
+  Source.cpp
+  Window.cpp
+  Generating Code...
