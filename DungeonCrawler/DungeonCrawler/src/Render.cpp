@@ -70,3 +70,11 @@ Render::~Render()
 	m_Context->Release();
 	m_RTV->Release();
 }
+
+void Render::RenderLoop()
+{
+	float color[] = { 0,1,1,1 };
+	m_Context->ClearRenderTargetView(m_RTV, color);
+
+	m_SwapChain->Present(0, 0);
+}

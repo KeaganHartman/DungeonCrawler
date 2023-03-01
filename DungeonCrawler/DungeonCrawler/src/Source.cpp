@@ -20,6 +20,7 @@ int main()
 			
 
 		// Render
+		pRender->RenderLoop();
 		Sleep(10);
 	}
 

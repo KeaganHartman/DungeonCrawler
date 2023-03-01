@@ -7,6 +7,7 @@ class Render
 public:
 	Render(HWND hWnd);
 	~Render();
+	void RenderLoop();
 
 private:
 	ID3D11Device*			m_Device = {};
