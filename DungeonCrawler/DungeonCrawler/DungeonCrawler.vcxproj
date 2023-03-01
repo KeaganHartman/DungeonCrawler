@@ -143,11 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Program.cpp" />
     <ClCompile Include="src\Render.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Program.h" />
     <ClInclude Include="src\Render.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
