@@ -2,10 +2,6 @@
 Render::Render(HWND hWnd)
 {
 #pragma region D3D11 Initialization
-
-	// Set Aspect Ratio
-	
-
 	// Create Device, Swap Chain, and Immediate Context
 	constexpr UINT16 fl_Size = 6;
 	D3D_FEATURE_LEVEL featureLevels[fl_Size] = {D3D_FEATURE_LEVEL_11_0,
@@ -17,6 +13,9 @@ Render::Render(HWND hWnd)
 
 	RECT myWinR;
 	GetClientRect(hWnd, &myWinR);
+
+	// Set Aspect Ratio
+	m_aspectRatio = (myWinR.right - myWinR.left) / (myWinR.bottom - myWinR.top);
 
 	DXGI_SWAP_CHAIN_DESC swapDesc = {};
 	ZeroMemory(&swapDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -153,8 +152,6 @@ Render::Render(HWND hWnd)
 	hr = m_pDevice->CreateInputLayout(ieDesc, 2, ExampleVertexShader, sizeof(ExampleVertexShader), &m_pInputLayout);
 
 
-	
-
 	// Create Constant Buffer
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(D3D11_BUFFER_DESC));
@@ -193,7 +190,6 @@ void Render::RenderLoop()
 	float color[] = { 0,1,1,1 };
 	m_pContext->ClearRenderTargetView(m_pRenderTargetView, color);
 
-
 	ID3D11RenderTargetView* tempRTV[] = { m_pRenderTargetView };
 	m_pContext->OMSetRenderTargets(1, tempRTV, nullptr);
 	m_pContext->RSSetViewports(1, &m_ViewPort);
@@ -210,12 +206,15 @@ void Render::RenderLoop()
 
 	// Math Stuff
 	// world
+	static float rot = 0; rot += 0.0001f;
 	DirectX::XMMATRIX temp = DirectX::XMMatrixIdentity();
 	temp = DirectX::XMMatrixTranslation(0, 0, 3);
+	DirectX::XMMATRIX temp2 = DirectX::XMMatrixRotationY(rot);
+	temp = DirectX::XMMatrixMultiply(temp2, temp);
 	temp = DirectX::XMMatrixTranspose(temp);
 	DirectX::XMStoreFloat4x4(&m_Matrices.world, temp);
 	// view
-	temp = DirectX::XMMatrixLookAtLH({ 2,1,-3 }, { 0,0,0 }, { 0,1,0 });
+	temp = DirectX::XMMatrixLookAtLH({ 1,1,-1 }, { 0,0,3 }, { 0,1,0 });
 	temp = DirectX::XMMatrixTranspose(temp);
 	DirectX::XMStoreFloat4x4(&m_Matrices.view, temp);
 	// projection
