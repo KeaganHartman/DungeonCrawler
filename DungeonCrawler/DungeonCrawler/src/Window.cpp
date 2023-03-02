@@ -8,6 +8,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CLOSE:
 		DestroyWindow(hWnd);
 		break;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -15,7 +16,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
-
 
 Window::Window()
 	: m_hInstance(GetModuleHandle(nullptr))

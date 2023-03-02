@@ -1,4 +1,7 @@
 ﻿  Program.cpp
+  Render.cpp
+D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(91,34): warning C4244: '=': conversion from 'LONG' to 'FLOAT', possible loss of data
+D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(92,36): warning C4244: '=': conversion from 'LONG' to 'FLOAT', possible loss of data
   Source.cpp
   Generating Code...
   DungeonCrawler.vcxproj -> D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\DungeonCrawler.exe

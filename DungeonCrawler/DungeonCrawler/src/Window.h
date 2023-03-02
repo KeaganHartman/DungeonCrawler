@@ -7,19 +7,13 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 class Window
 {
 public:
-	// Constructor
 	Window();
-		
-	
-	// Delete Copy Constructor and "=" operator
+	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
-
-	// Deconstructor
-	~Window();
+	
 
 	bool ProcessMessages();
-
 	HWND GetWindow() { return m_hWnd; }
 
 private:
