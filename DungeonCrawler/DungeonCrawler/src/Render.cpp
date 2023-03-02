@@ -1,6 +1,7 @@
 #include "Render.h"
 Render::Render(HWND hWnd)
 {
+#pragma region D3D11 Initialization
 	// Create Device, Swap Chain, and Immediate Context
 	constexpr UINT16 fl_Size = 6;
 	D3D_FEATURE_LEVEL featureLevels[fl_Size] = {D3D_FEATURE_LEVEL_11_0,
@@ -54,11 +55,7 @@ Render::Render(HWND hWnd)
 
 	m_pDebugger = 0;
 	hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pDebugger);
-
-	//////////////////////////////////////////////////////
-	//		D3D 11 is Initialized at this point			//
-	//////////////////////////////////////////////////////
-
+#pragma endregion
 
 	// Create Render Target View to allow binding of swap chain texture
 	hr = m_pDevice->CreateRenderTargetView( pSwapChainBuffer,
@@ -88,14 +85,56 @@ Render::Render(HWND hWnd)
 
 	//hr = m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer, &dsv_desc, &m_pDepthStencilView);
 
-
-
 	// Initialize Viewport
 	m_ViewPort.Width = myWinR.right - myWinR.left;
 	m_ViewPort.Height = myWinR.bottom - myWinR.top;
 	m_ViewPort.TopLeftX = m_ViewPort.TopLeftY = 0;
 	m_ViewPort.MinDepth = 0;
 	m_ViewPort.MaxDepth = 1;
+
+	// Load Triangle -- Create Buffer that Points to Triangle
+	ColorVertex triangle[] =
+	{	// Position				// Color
+		{{0, 0.5f, 0, 1},		{1,0,0,1}},
+		{{0.5f, -0.5f, 0, 1},	{0,1,0,1}},
+		{{-0.5f, -0.5f, 0, 1},	{0,0,1,1}}
+	};
+
+	D3D11_BUFFER_DESC bDesc;
+
+	ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
+	bDesc.ByteWidth = sizeof(triangle);
+	bDesc.Usage = D3D11_USAGE_DEFAULT;
+	bDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bDesc.CPUAccessFlags = 0;
+	bDesc.MiscFlags = 0;
+	bDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA subData;
+
+	ZeroMemory(&subData, sizeof(D3D11_SUBRESOURCE_DATA));
+	subData.pSysMem = triangle;
+	
+	hr = m_pDevice->CreateBuffer(&bDesc, &subData, &m_pTriangleVBuffer);
+
+	// Create Vertex and Pixel Shaders
+	hr = m_pDevice->CreateVertexShader(	ExampleVertexShader, 
+										sizeof(ExampleVertexShader), 
+										nullptr, 
+										&m_pVShader);
+
+	hr = m_pDevice->CreatePixelShader(	ExamplePixelShader, 
+										sizeof(ExamplePixelShader), 
+										nullptr, 
+										&m_pPShader);
+
+	// Create Input Layout
+	D3D11_INPUT_ELEMENT_DESC ieDesc[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	hr = m_pDevice->CreateInputLayout(ieDesc, 2, ExampleVertexShader, sizeof(ExampleVertexShader), &m_pInputLayout);
 }
 
 Render::~Render()
@@ -106,7 +145,13 @@ Render::~Render()
 	m_pRenderTargetView->Release();
 	m_pDebugger->Release();
 	m_pDepthStencilBuffer->Release();
-	m_pDepthStencilView->Release();
+	//m_pDepthStencilView->Release();
+
+	// Release Triangle
+	m_pTriangleVBuffer->Release();
+	m_pInputLayout->Release();
+	m_pVShader->Release();
+	m_pPShader->Release();
 }
 
 void Render::RenderLoop()
@@ -114,6 +159,22 @@ void Render::RenderLoop()
 	float color[] = { 0,1,1,1 };
 	m_pContext->ClearRenderTargetView(m_pRenderTargetView, color);
 
-	m_pSwapChain->Present(1, 0);
+
+	ID3D11RenderTargetView* tempRTV[] = { m_pRenderTargetView };
+	m_pContext->OMSetRenderTargets(1, tempRTV, nullptr);
+	m_pContext->RSSetViewports(1, &m_ViewPort);
+	m_pContext->IASetInputLayout(m_pInputLayout);
+	UINT strides[] = {sizeof(ColorVertex)};
+	UINT offsets[] = {0};
+	ID3D11Buffer* tempVB[] = { m_pTriangleVBuffer };
+	m_pContext->IASetVertexBuffers(0, 1, tempVB, strides, offsets);
+	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pContext->VSSetShader(m_pVShader, 0, 0);
+	m_pContext->PSSetShader(m_pPShader, 0, 0);
+
+
+	
+	m_pContext->Draw(3, 0);
+	m_pSwapChain->Present(0, 0);
 }
 

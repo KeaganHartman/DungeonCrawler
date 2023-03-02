@@ -5,7 +5,14 @@
       <FullPath>D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\DungeonCrawler.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\ExamplePixelShader.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\ExampleVertexShader.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>

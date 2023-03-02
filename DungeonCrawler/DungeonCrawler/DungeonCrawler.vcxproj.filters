@@ -24,6 +24,9 @@
     <ClCompile Include="src\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -32,5 +35,12 @@
     <ClInclude Include="src\Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\ExampleVertexShader.hlsl" />
+    <FxCompile Include="shaders\ExamplePixelShader.hlsl" />
   </ItemGroup>
 </Project>
