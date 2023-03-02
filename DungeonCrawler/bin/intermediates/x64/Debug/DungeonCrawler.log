@@ -1,11 +1,2 @@
-﻿  compilation header save succeeded; see D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\shaders\ExamplePixelShader.csh
-  compilation object save succeeded; see D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\ExamplePixelShader.cso
-  compilation header save succeeded; see D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\shaders\ExampleVertexShader.csh
-  compilation object save succeeded; see D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\ExampleVertexShader.cso
-  Program.cpp
-  Render.cpp
-D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(89,34): warning C4244: '=': conversion from 'LONG' to 'FLOAT', possible loss of data
-D:\Dev\DungeonCrawler\DungeonCrawler\DungeonCrawler\src\Render.cpp(90,36): warning C4244: '=': conversion from 'LONG' to 'FLOAT', possible loss of data
-  Source.cpp
-  Generating Code...
+﻿  Window.cpp
   DungeonCrawler.vcxproj -> D:\Dev\DungeonCrawler\DungeonCrawler\bin\x64\Debug\DungeonCrawler.exe

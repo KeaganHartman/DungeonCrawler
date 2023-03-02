@@ -2,6 +2,10 @@
 Render::Render(HWND hWnd)
 {
 #pragma region D3D11 Initialization
+
+	// Set Aspect Ratio
+	
+
 	// Create Device, Swap Chain, and Immediate Context
 	constexpr UINT16 fl_Size = 6;
 	D3D_FEATURE_LEVEL featureLevels[fl_Size] = {D3D_FEATURE_LEVEL_11_0,
@@ -94,10 +98,22 @@ Render::Render(HWND hWnd)
 
 	// Load Triangle -- Create Buffer that Points to Triangle
 	ColorVertex triangle[] =
-	{	// Position				// Color
-		{{0, 0.5f, 0, 1},		{1,0,0,1}},
-		{{0.5f, -0.5f, 0, 1},	{0,1,0,1}},
-		{{-0.5f, -0.5f, 0, 1},	{0,0,1,1}}
+	{	// Position						// Color
+		{{0, 1.0f, 0, 1},				{1,0,0,1}},// Face
+		{{0.25f, -0.25f, -0.25f, 1},	{0,1,0,1}},
+		{{-0.25f, -0.25f, -0.25f, 1},	{0,0,1,1}},
+
+		{{0, 1.0f, 0, 1},				{1,0,0,1}},// Back
+		{{-0.25f, -0.25f, 0.25f, 1},	{0,1,0,1}},
+		{{0.25f, -0.25f, 0.25f, 1},		{0,0,1,1}},
+
+		{{0, 1.0f, 0, 1},				{1,0,0,1}},// Right
+		{{0.25f, -0.25f, 0.25f, 1},		{0,1,0,1}},
+		{{0.25f, -0.25f, -0.25f, 1},	{0,0,1,1}},
+
+		{{0, 1.0f, 0, 1},				{1,0,0,1}},// Left
+		{{-0.25f, -0.25f, -0.25f, 1},	{0,1,0,1}},
+		{{-0.25f, -0.25f, 0.25f, 1},	{0,0,1,1}}
 	};
 
 	D3D11_BUFFER_DESC bDesc;
@@ -135,6 +151,21 @@ Render::Render(HWND hWnd)
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	hr = m_pDevice->CreateInputLayout(ieDesc, 2, ExampleVertexShader, sizeof(ExampleVertexShader), &m_pInputLayout);
+
+
+	
+
+	// Create Constant Buffer
+	D3D11_BUFFER_DESC cbDesc;
+	ZeroMemory(&cbDesc, sizeof(D3D11_BUFFER_DESC));
+	cbDesc.ByteWidth = sizeof(WVP);
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.MiscFlags = 0;
+	cbDesc.StructureByteStride = 0;
+
+	hr = m_pDevice->CreateBuffer(&cbDesc, nullptr, &m_pConstantBuffer);
 }
 
 Render::~Render()
@@ -152,6 +183,9 @@ Render::~Render()
 	m_pInputLayout->Release();
 	m_pVShader->Release();
 	m_pPShader->Release();
+
+	// Release Constant Buffer
+	m_pConstantBuffer->Release();
 }
 
 void Render::RenderLoop()
@@ -172,9 +206,32 @@ void Render::RenderLoop()
 	m_pContext->VSSetShader(m_pVShader, 0, 0);
 	m_pContext->PSSetShader(m_pPShader, 0, 0);
 
+	m_pContext->Draw(12, 0);
 
-	
-	m_pContext->Draw(3, 0);
+	// Math Stuff
+	// world
+	DirectX::XMMATRIX temp = DirectX::XMMatrixIdentity();
+	temp = DirectX::XMMatrixTranslation(0, 0, 3);
+	temp = DirectX::XMMatrixTranspose(temp);
+	DirectX::XMStoreFloat4x4(&m_Matrices.world, temp);
+	// view
+	temp = DirectX::XMMatrixLookAtLH({ 2,1,-3 }, { 0,0,0 }, { 0,1,0 });
+	temp = DirectX::XMMatrixTranspose(temp);
+	DirectX::XMStoreFloat4x4(&m_Matrices.view, temp);
+	// projection
+	temp = DirectX::XMMatrixPerspectiveFovLH(3.14f / 2.0f, m_aspectRatio, 0.1f, 1000);
+	temp = DirectX::XMMatrixTranspose(temp);
+	DirectX::XMStoreFloat4x4(&m_Matrices.proj, temp);
+
+
+	D3D11_MAPPED_SUBRESOURCE gpuBuffer;
+	HRESULT hr = m_pContext->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
+	*((WVP*)(gpuBuffer.pData)) = m_Matrices;
+	m_pContext->Unmap(m_pConstantBuffer, 0);
+	ID3D11Buffer* constants[] = { m_pConstantBuffer };
+	m_pContext->VSSetConstantBuffers(0, 1, constants);
+
+
 	m_pSwapChain->Present(0, 0);
 }
 

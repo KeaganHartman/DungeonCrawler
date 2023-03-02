@@ -31,7 +31,7 @@ Window::Window()
 
 	RegisterClass(&wndClass);
 
-	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_MAXIMIZE;
 
 	int width = 640;
 	int height = 480;
